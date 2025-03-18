@@ -1,6 +1,8 @@
 
 # Evaluation - Conception d'une base de données
 
+sujet : https://www.canva.com/design/DAGgwwzdGNw/OIiAIcGIkSLB0dEBmxR7HA/edit
+
 
 dbDiagram – entités
 
