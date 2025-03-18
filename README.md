@@ -1,5 +1,5 @@
 
-# Projet Gestion Locative - Base de données
+# Evaluation - Conception d'une base de données
 
 
 dbDiagram – entités
