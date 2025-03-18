@@ -8,100 +8,100 @@ datasource db {
 }
 
 model User {
-  id             String        @id @default(uuid()) @db.Uuid
-  email          String        @unique
-  password       String
-  full_name      String
-  role           Role
-  created_at     DateTime      @default(now())
+  id                String       @id @default(uuid()) @db.Uuid
+  email             String       @unique
+  password          String
+  full_name         String
+  role              Role
+  created_at        DateTime     @default(now())
 
   // Relations
-  properties     Property[]    @relation("OwnerProperties")
-  tenantContracts Contract[]   @relation("TenantContracts")
-  sentMessages   Message[]     @relation("SentMessages")
-  receivedMessages Message[]   @relation("ReceivedMessages")
+  properties        Property[]   @relation("OwnerProperties")
+  tenantContracts   Contract[]   @relation("TenantContracts")
+  sentMessages      Message[]    @relation("SentMessages")
+  receivedMessages  Message[]    @relation("ReceivedMessages")
 }
 
 model Property {
-  id             String        @id @default(uuid()) @db.Uuid
-  owner_id       String        @db.Uuid
+  id             String          @id @default(uuid()) @db.Uuid
+  owner_id       String          @db.Uuid
   title          String
   description    String?
   address        String
   type           PropertyType
   area           Int
-  rent_price     Decimal       @db.Decimal(10, 2)
-  status         PropertyStatus @default(AVAILABLE)
-  created_at     DateTime      @default(now())
+  rent_price     Decimal         @db.Decimal(10, 2)
+  status         PropertyStatus  @default(AVAILABLE)
+  created_at     DateTime        @default(now())
 
   // Relations
-  owner          User          @relation("OwnerProperties", fields: [owner_id], references: [id])
+  owner          User            @relation("OwnerProperties", fields: [owner_id], references: [id], onDelete: Cascade)
   contracts      Contract[]
   maintenances   Maintenance[]
 }
 
 model Contract {
-  id             String        @id @default(uuid()) @db.Uuid
-  property_id    String        @db.Uuid
-  tenant_id      String        @db.Uuid
+  id             String           @id @default(uuid()) @db.Uuid
+  property_id    String           @db.Uuid
+  tenant_id      String           @db.Uuid
   start_date     DateTime
   end_date       DateTime
-  deposit        Decimal       @db.Decimal(10, 2)
-  status         ContractStatus @default(ACTIVE)
-  created_at     DateTime      @default(now())
+  deposit        Decimal          @db.Decimal(10, 2)
+  status         ContractStatus   @default(ACTIVE)
+  created_at     DateTime         @default(now())
 
   // Relations
-  property       Property      @relation(fields: [property_id], references: [id])
-  tenant         User          @relation("TenantContracts", fields: [tenant_id], references: [id])
+  property       Property         @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  tenant         User             @relation("TenantContracts", fields: [tenant_id], references: [id], onDelete: Cascade)
   payments       Payment[]
   documents      Document[]
 }
 
 model Payment {
-  id             String        @id @default(uuid()) @db.Uuid
-  contract_id    String        @db.Uuid
+  id             String         @id @default(uuid()) @db.Uuid
+  contract_id    String         @db.Uuid
   payment_date   DateTime
-  amount         Decimal       @db.Decimal(10, 2)
+  amount         Decimal        @db.Decimal(10, 2)
   payment_mode   PaymentMode
   receipt_url    String?
 
   // Relations
-  contract       Contract      @relation(fields: [contract_id], references: [id])
+  contract       Contract       @relation(fields: [contract_id], references: [id], onDelete: Cascade)
 }
 
 model Maintenance {
-  id             String        @id @default(uuid()) @db.Uuid
-  property_id    String        @db.Uuid
+  id             String             @id @default(uuid()) @db.Uuid
+  property_id    String             @db.Uuid
   date           DateTime
   type           MaintenanceType
-  cost           Decimal       @db.Decimal(10, 2)
+  cost           Decimal            @db.Decimal(10, 2)
   description    String?
 
   // Relations
-  property       Property      @relation(fields: [property_id], references: [id])
+  property       Property           @relation(fields: [property_id], references: [id], onDelete: Cascade)
 }
 
 model Message {
-  id             String        @id @default(uuid()) @db.Uuid
-  sender_id      String        @db.Uuid
-  receiver_id    String        @db.Uuid
+  id             String         @id @default(uuid()) @db.Uuid
+  sender_id      String         @db.Uuid
+  receiver_id    String         @db.Uuid
   content        String
-  sent_at        DateTime      @default(now())
+  sent_at        DateTime       @default(now())
 
   // Relations
-  sender         User          @relation("SentMessages", fields: [sender_id], references: [id])
-  receiver       User          @relation("ReceivedMessages", fields: [receiver_id], references: [id])
+  sender         User           @relation("SentMessages", fields: [sender_id], references: [id], onDelete: Cascade)
+  receiver       User           @relation("ReceivedMessages", fields: [receiver_id], references: [id], onDelete: Cascade)
 }
 
 model Document {
-  id             String        @id @default(uuid()) @db.Uuid
-  contract_id    String        @db.Uuid
+  id             String         @id @default(uuid()) @db.Uuid
+  contract_id    String         @db.Uuid
   name           String
   file_url       String?
-  uploaded_at    DateTime      @default(now())
+  uploaded_at    DateTime       @default(now())
 
   // Relations
-  contract       Contract      @relation(fields: [contract_id], references: [id])
+  contract       Contract       @relation(fields: [contract_id], references: [id], onDelete: Cascade)
 }
 
 enum Role {
